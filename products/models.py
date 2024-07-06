@@ -31,13 +31,6 @@ class Size(models.Model):
     def __str__(self):
         return self.name
 
-class Image(models.Model):
-    title = models.CharField(max_length= 100, null= True, blank= True)
-    image = models.ImageField(upload_to = 'images')
-    
-    def __str__(self):
-        return self.title if self.title else 'No title available'
-
 class Product(models.Model):
     name = models.CharField(max_length= 250, null= False, default= '')
     description = models.CharField(max_length= 250, null= True, blank= True)
@@ -53,7 +46,7 @@ class Product(models.Model):
         return self.name 
     
 
-class Product_Color_Size(models.Model):
+class ProductSizeColorQuantity(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     color = models.ForeignKey(Color , on_delete=models.PROTECT)
     size = models.ForeignKey(Size, on_delete=models.PROTECT)
@@ -63,10 +56,10 @@ class Product_Color_Size(models.Model):
     def __str__(self):
         return str(self.product) + " " + str(self.color) + ' ' + str(self.size)
     
-class Product_Color(models.Model):
+class ProductColorImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     color = models.ForeignKey(Color , on_delete=models.PROTECT)
-    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to = 'images')
     
     def __str__(self):
         return str(self.product) + " " + str(self.color)
