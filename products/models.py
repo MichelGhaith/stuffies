@@ -59,7 +59,11 @@ class ProductSizeColorQuantity(models.Model):
     size = models.ForeignKey(Size, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default= 0, null= False)
     price = models.PositiveIntegerField(default= 0, null= False)
-
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['product', 'color', 'size'], name='unique_product_color_size')
+        ]
     def __str__(self):
         return str(self.product) + " " + str(self.color) + ' ' + str(self.size)
     
@@ -68,6 +72,10 @@ class ProductColorImages(models.Model):
     color = models.ForeignKey(Color , on_delete=models.PROTECT)
     images = models.ManyToManyField(Image)
     
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['product', 'color'], name='unique_product_color')
+        ]
     def __str__(self):
         return str(self.product) + " " + str(self.color)
     
