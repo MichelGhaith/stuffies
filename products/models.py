@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 # Create your models here.
+
 class Brand(models.Model):
     name = models.CharField(max_length= 50, null= False,  unique= True)
     def __str__(self):
@@ -38,6 +39,7 @@ class Image(models.Model):
         return self.image.url 
     
 
+    
 class Product(models.Model):
     name = models.CharField(max_length= 250, null= False, default= '')
     description = models.CharField(max_length= 250, null= True, blank= True)
@@ -54,7 +56,7 @@ class Product(models.Model):
     
 
 class ProductSizeColorQuantity(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='size_color_quantities', on_delete=models.CASCADE)
     color = models.ForeignKey(Color , on_delete=models.PROTECT)
     size = models.ForeignKey(Size, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default= 0, null= False)
@@ -64,11 +66,12 @@ class ProductSizeColorQuantity(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['product', 'color', 'size'], name='unique_product_color_size')
         ]
+        
     def __str__(self):
         return str(self.product) + " " + str(self.color) + ' ' + str(self.size)
     
 class ProductColorImages(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name= 'product_color_images', on_delete=models.CASCADE)
     color = models.ForeignKey(Color , on_delete=models.PROTECT)
     images = models.ManyToManyField(Image)
     
@@ -78,4 +81,9 @@ class ProductColorImages(models.Model):
         ]
     def __str__(self):
         return str(self.product) + " " + str(self.color)
-    
+
+class Review(models.Model):
+    product = models.ForeignKey(Product,related_name= 'product_review', on_delete= models.CASCADE)
+    rating = models.PositiveIntegerField(null = True)
+    description = models.TextField(null= True)
+    created_at = models.DateTimeField(auto_now_add= True)
